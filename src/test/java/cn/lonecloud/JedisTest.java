@@ -17,8 +17,10 @@ import java.util.List;
 public class JedisTest {
     @Test
     public void getJedis(){
-        Jedis jedis = RedisUtils.getJedis();
+//        Jedis jedis = RedisUtils.getJedis();
+        Jedis jedis=new Jedis("127.0.0.1",6379);
         System.out.println(jedis.ping());
+
     }
     @Test
     public void set(){
@@ -32,7 +34,7 @@ public class JedisTest {
         list.add("3");
         list.add("4");
         list.add("5");
-        RedisUtils.setList("list",list);
+        RedisUtils.setList("list",list,false);
         for (String s : RedisUtils.getList("list", 0, list.size())) {
             System.out.println("list"+s);
         }
@@ -54,5 +56,4 @@ public class JedisTest {
         User user1 = RedisUtils.getObject("obj1", User.class);
         System.out.println(user1.toString());
     }
-
 }
