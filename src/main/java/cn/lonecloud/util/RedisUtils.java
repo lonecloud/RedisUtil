@@ -5,12 +5,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.Pipeline;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 /**
  * <p>用于便捷使用Redis的工具类</p>
@@ -159,6 +162,20 @@ public class RedisUtils {
         byte[] bytes = getJedis().get(key.getBytes());
         T obj = ObjectUtils.ObjectFromBytes(bytes, clazz);
         return obj;
+    }
+
+    /**
+     * 批量删除key
+     * @param keys
+     * @return
+     */
+    public static int mDel(Set<String> keys){
+        Pipeline pipelined = getJedis().pipelined();
+        for (String key : keys) {
+            pipelined.del(key);
+        }
+        List<Object> objects = pipelined.syncAndReturnAll();
+        return objects.size();
     }
 
     /**
